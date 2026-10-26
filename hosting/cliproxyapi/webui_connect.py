@@ -79,6 +79,13 @@ elif mode == "apply":
         if status != 200:
             status, res = call("POST", f"/api/v1/models/model/update?id={model_id}", token, body)
         print(f"model {model_id}: {status}")
+elif mode == "restore":
+    # Rueckweg: gesicherten Stand aus "backup" (JSON auf stdin) zurueckschreiben.
+    # Die Modelleintraege bleiben; ohne Verbindung sieht sie niemand.
+    saved = json.load(sys.stdin)
+    status, res = call("POST", "/openai/config/update", token, {
+        k: saved[k] for k in ("ENABLE_OPENAI_API", "OPENAI_API_BASE_URLS", "OPENAI_API_KEYS", "OPENAI_API_CONFIGS")})
+    print("config restore:", status, "urls:", res.get("OPENAI_API_BASE_URLS") if status == 200 else res)
 elif mode == "verify":
     status, cfg = call("GET", "/openai/config", token)
     print("enable:", cfg["ENABLE_OPENAI_API"], "urls:", cfg["OPENAI_API_BASE_URLS"],

@@ -23,12 +23,14 @@ steht nur in Open WebUI. Kein bezahlter API-Key, kein OpenRouter, kein Fallback.
 Abgeschaltet: Management-API und Panel, Plugins, LAN-Discovery, Request-Logging,
 Nutzungsstatistik, Bildgenerierung, Wiederholungsrunden (`request-retry: 0`),
 Codex- und Claude-Cloaking. Ist SIWC aktiv und fehlt das SIWC-Token, antwortet das
-Gateway mit 401 statt auf den Legacy-Codex-Weg zu wechseln.
+Gateway laut Quellcode mit 401 statt auf den Legacy-Codex-Weg zu wechseln (nicht
+praktisch getestet).
 
 **Body-Logs:** Bei Fehlern schreibt CLIProxyAPI unabhaengig von `request-log`
 erzwungene Fehler-Logs mit Request-Body. Ist `./logs` nicht beschreibbar, weicht es
 auf `<auth-dir>/logs` aus. `WRITABLE_PATH=/CLIProxyAPI` lenkt das ins schreibgeschuetzte
-Image; dort schlaegt das Schreiben fehl, `auths/` bleibt frei von Gespraechsinhalten.
+Image; dort schlaegt das Schreiben ohne sichtbare Meldung fehl, `auths/` bleibt frei
+von Gespraechsinhalten.
 
 ## Freigegebene Modelle
 
@@ -71,14 +73,22 @@ Der Code ist einmalig und ohne PKCE-Verifier wertlos, trotzdem nicht in Logs abl
 ## Sicherung und Rueckweg
 
 - Gateway: `/backup/cliproxyapi/cliproxyapi-<zeit>.tar.gz` (0600, enthaelt Tokens und Key).
+  Der Gateway-Key steht ausserdem in `webui.db`, also in jedem Archiv unter `/backup/open-webui`.
   Kein Timer; Tokens rotieren, Wiederherstellung ist im Zweifel ein neuer Login.
 - WebUI-Verbindung vor der Aenderung: `/root/open-webui-openai-config-backup-20261026-154746.json`
   (OpenAI aus, nur Werkseintrag `api.openai.com` ohne Key).
 - WebUI-Gesamtsicherung davor: `/backup/open-webui/open-webui-20261026-154627.tar.gz`.
 
-Rueckweg: In Open WebUI unter Admin > Verbindungen die Gateway-Verbindung deaktivieren
-oder `webui_connect.py`-Muster mit dem gesicherten Stand an `/openai/config/update`
-schicken; danach `docker compose -f /opt/docker/cliproxyapi/compose.yaml stop`.
+Rueckweg: In Open WebUI unter Admin > Verbindungen die Gateway-Verbindung deaktivieren,
+oder den gesicherten Stand zurueckschreiben:
+
+```bash
+docker cp hosting/cliproxyapi/webui_connect.py open-webui:/tmp/webui_connect.py
+PW=$(cat /root/.open-webui-admin-password) docker exec -i -e PW open-webui \
+  python /tmp/webui_connect.py restore < /root/open-webui-openai-config-backup-20261026-154746.json
+docker compose --project-directory /opt/docker/cliproxyapi stop
+```
+
 Volumes und WebUI-Daten bleiben. Kein Datenbank-Restore ohne Abstimmung.
 
 ## Grenzen

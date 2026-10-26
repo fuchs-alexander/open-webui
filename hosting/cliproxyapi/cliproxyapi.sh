@@ -15,7 +15,8 @@ probe() {
         wrong) key=invalid-test-key ;;
         real) key=$(sed -n 's/^    - "\(.*\)"$/\1/p' "$STACK/config.yaml" | head -n1) ;;
     esac
-    docker exec -i -e PROBE_KEY="$key" -e PROBE_PATH="$path" open-webui python - <<'PY'
+    # Werte nur ueber die Umgebung, damit der Key nicht in der Prozessliste steht.
+    PROBE_KEY=$key PROBE_PATH=$path docker exec -i -e PROBE_KEY -e PROBE_PATH open-webui python - <<'PY'
 import json, os, urllib.request, urllib.error
 req = urllib.request.Request("http://cliproxyapi:8317" + os.environ["PROBE_PATH"])
 if os.environ["PROBE_KEY"]:
