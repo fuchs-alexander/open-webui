@@ -12,6 +12,75 @@ Die OpenChamber zeigt sie als Projekt **Open WebUI**.
 - Live-Stack und Daten: `/opt/docker/open-webui`, nicht dieser Checkout.
 - Oeffentliche Instanz: `https://ai.colibo.io`.
 
+## Projektziel: Posylka
+
+Open WebUI soll als KI-Arbeitsumgebung fuer **Posylka** dienen. In der
+Anwendung soll ein eigener Projektbereich mit dem Namen **Posylka** fuer
+projektbezogene Chats, Anweisungen und Wissen eingerichtet werden. Das
+OpenChamber-Codeprojekt **Open WebUI** und dieser Anwendungsbereich sind
+unterschiedliche Dinge; das Codeprojekt nicht dafuer umbenennen.
+
+Gewuenschte Anbindungen:
+
+- **OpenAI ueber den vorhandenen ChatGPT-Pro-Account**, nicht automatisch
+  ueber eine separat abgerechnete OpenAI-API. Einen fuer die eingesetzte
+  Version unterstuetzten Kontozugang pruefen. Ein WebUI-SSO-Login allein
+  stellt keinen Modellzugang bereit. Kein API-Guthaben aus dem Pro-Abo
+  ableiten und keine freie Nutzung aller API-Modelle versprechen.
+- **Higgsfield MCP fuer Bilder**, insbesondere Bildgenerierung und
+  Bildbearbeitung im Posylka-Arbeitsablauf. Offizieller Remote-Endpunkt:
+  `https://mcp.higgsfield.ai/mcp`. Anmeldung ueber Higgsfield-OAuth mit dem
+  vorgesehenen Benutzerkonto; kein separater Higgsfield-API-Key notwendig.
+  Die Kompatibilitaet des WebUI-MCP-/OAuth-Clients mit dem Dienst vor einer
+  Erfolgsmeldung pruefen. Keine OpenCode-MCP-Konfiguration als Ersatz fuer
+  die Anbindung innerhalb von Open WebUI behandeln.
+
+### Umsetzung und Abnahme
+
+1. Vorhandene Projekt-/Ordnerfunktionen und bestehende Bereiche pruefen;
+   Posylka nicht doppelt anlegen. Zielkonto und Sichtbarkeit klaeren, falls
+   sie aus der angemeldeten Sitzung nicht eindeutig hervorgehen. Mit einem
+   privaten Bereich beginnen; keine pauschale Freigabe an alle Benutzer.
+2. Projektanweisungen und Wissen nur aus bestaetigten Posylka-Informationen
+   uebernehmen. Keine Firmendaten, Markenregeln oder Dokumente erfinden.
+3. Fuer ChatGPT Pro einen nachweislich unterstuetzten Integrationsweg
+   ermitteln. Falls ein zusaetzlicher Adapter notwendig ist, Architektur,
+   Nutzungsbedingungen, Kontorisiken und Betriebsaufwand vor Installation
+   mit dem Benutzer abstimmen. Kein stiller Wechsel zur kostenpflichtigen
+   API und kein Kopieren bestehender Codex-/OpenCode-Anmeldedaten.
+4. Higgsfield innerhalb von Open WebUI als MCP-Werkzeug anbinden und die
+   persoenliche OAuth-Freigabe vom Benutzer durchfuehren lassen. Tokens
+   ausschliesslich geschuetzt im Laufzeitsystem speichern, niemals in
+   Projektdateien, Chat-Ausgaben oder Logs offenlegen.
+5. Higgsfield-MCP-Generierungen verbrauchen laut Anbieter immer Credits;
+   Unlimited- und Gratisgenerierungen der Website gelten dort nicht.
+   Vor einem kostenpflichtigen Generierungstest Zustimmung einholen;
+   kein Abo abschliessen, keine Credits kaufen und keine kostenpflichtige
+   Testphase ohne gesonderten Auftrag aktivieren.
+6. Abnahme in der echten Oberflaeche: Posylka sichtbar, Modellantwort ueber
+   den gewaehlten Pro-Zugang, Higgsfield verbunden und Werkzeuge abrufbar.
+   Nach freigegebenem Bildtest Ergebnisanzeige pruefen. Konfiguration,
+   ausstehende Anmeldung und erfolgreich getesteten Betrieb klar trennen.
+
+### Verifizierter Stand der Vorbereitung (2026-10-26)
+
+- Die Ziele Posylka, ChatGPT Pro und Higgsfield sind vom Benutzer bestaetigt.
+- Im untersuchten Backend dieses Checkouts wurde kein nativer
+  ChatGPT-/Codex-Kontozugang gefunden. Der Pro-Integrationsweg ist offen;
+  die normale OpenAI-API-Verbindung ist kein Ersatz fuer diese Anforderung.
+- Der Higgsfield-Endpunkt, OAuth und Creditverbrauch sind durch die
+  offizielle Anbieter-Dokumentation bestaetigt. Die Verbindung mit dieser
+  Open-WebUI-Installation ist noch nicht getestet oder eingerichtet.
+- Die Anlage von Posylka in der laufenden Anwendung ist noch nicht
+  verifiziert. Der OpenChamber-Browserzugriff lieferte bei der Vorbereitung
+  HTTP 401; daraus folgt keine Aussage ueber den Zustand der Anwendung.
+
+Quellen fuer die Anbindungen:
+
+- OpenAI: `https://help.openai.com/en/articles/20001542-using-your-chatgpt-plan-in-other-apps-and-sites`
+- Open WebUI: `https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-openai.md`
+- Higgsfield: `https://higgsfield.ai/creator-hub/help-center/integrations/what-is-higgsfield-mcp`
+
 ## Verbindliche Regeln
 
 1. Kein Commit, Push, Image-Build oder Deploy ohne ausdruecklichen Auftrag.
