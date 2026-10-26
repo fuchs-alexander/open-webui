@@ -68,16 +68,40 @@ Gewuenschte Anbindungen:
 - Im untersuchten Backend dieses Checkouts wurde kein nativer
   ChatGPT-/Codex-Kontozugang gefunden. Der Pro-Integrationsweg ist offen;
   die normale OpenAI-API-Verbindung ist kein Ersatz fuer diese Anforderung.
+  OpenAI dokumentiert inzwischen einen offiziellen SIWC-Plan-Nutzungsweg
+  fuer Open-Source-Anwendungen mit eigenstaendiger OAuth-Registrierung und
+  Responses API unter `https://api.openai.com/v1`. Dies ist nicht der
+  Codex-Backend-Proxy-Weg. Vor Umsetzung Eignung fuer den konkreten
+  Hosting-/Mehrbenutzerbetrieb und persoenliche Kontozuordnung klaeren;
+  kein einzelnes Pro-Konto stillschweigend allen WebUI-Benutzern zuweisen.
 - Der Higgsfield-Endpunkt, OAuth und Creditverbrauch sind durch die
-  offizielle Anbieter-Dokumentation bestaetigt. Die Verbindung mit dieser
-  Open-WebUI-Installation ist noch nicht getestet oder eingerichtet.
-- Die Anlage von Posylka in der laufenden Anwendung ist noch nicht
-  verifiziert. Der OpenChamber-Browserzugriff lieferte bei der Vorbereitung
-  HTTP 401; daraus folgt keine Aussage ueber den Zustand der Anwendung.
+  offizielle Anbieter-Dokumentation bestaetigt. Die MCP-Verbindung wurde
+  ueber die Open-WebUI-Admin-API gespeichert und per GET nachgeprueft:
+  ID `higgsfield`, OAuth 2.1, Client registriert, aktiviert. Auf ausdruecklichen
+  Benutzerauftrag fuer alle angemeldeten Benutzer freigegeben und erneut
+  per GET verifiziert (`principal_type: user`, `principal_id: *`,
+  `permission: read`). Jeder Benutzer autorisiert sein eigenes Konto;
+  keine gemeinsame OAuth-Sitzung oder Credits bereitgestellt.
+  Vor der Freigabe meldete der Werkzeug-Endpunkt
+  `authenticated: false`: Die persoenliche Higgsfield-OAuth-Freigabe und
+  ein anschliessender Funktionstest stehen noch aus. Keine Generierung
+  gestartet und keine Credits verbraucht.
+- Der private Bereich `Posylka` wurde ueber die Ordner-API fuer das Konto
+  des vom Benutzer bereitgestellten API-Schluessels angelegt. Die erneute
+  Abfrage bestaetigt den Bereich. Projektwissen und individuelle
+  Anweisungen wurden nicht erfunden oder ungefragt hinterlegt.
+- Direkter API-Zugriff auf `https://ai.colibo.io` funktioniert. Die
+  Installation meldet v0.12.4, aktive Authentifizierung und geschlossene
+  Registrierung. Ein frueherer HTTP-401-Fehler des OpenChamber-Werkzeugs
+  ist kein Fehlernachweis fuer Open WebUI.
+- Der im Chat bereitgestellte WebUI-API-Schluessel wurde nicht in Dateien
+  gespeichert. Benutzer soll ihn nach der Einrichtung widerrufen/ersetzen.
 
 Quellen fuer die Anbindungen:
 
 - OpenAI: `https://help.openai.com/en/articles/20001542-using-your-chatgpt-plan-in-other-apps-and-sites`
+- OpenAI SIWC: `https://developers.openai.com/siwc/token-sharing-open-source`
+- SIWC-Grenzen: `https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations`
 - Open WebUI: `https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-openai.md`
 - Higgsfield: `https://higgsfield.ai/creator-hub/help-center/integrations/what-is-higgsfield-mcp`
 
