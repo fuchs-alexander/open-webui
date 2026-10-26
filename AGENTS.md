@@ -12,6 +12,33 @@ Die OpenChamber zeigt sie als Projekt **Open WebUI**.
 - Live-Stack und Daten: `/opt/docker/open-webui`, nicht dieser Checkout.
 - Oeffentliche Instanz: `https://ai.colibo.io`.
 
+## Anzeigename PosylkaAI
+
+Der Benutzer hat den sichtbaren Anwendungsnamen **PosylkaAI** ohne Zusatz
+und dafuer Build/Deploy ausdruecklich freigegeben. Der Projektordner
+`Posylka` in der Anwendung bleibt unveraendert; dies benennt weder den
+Checkout noch das OpenChamber-Projekt um.
+
+- `WEBUI_NAME=PosylkaAI`; der automatische Namenszusatz in
+  `backend/open_webui/env.py` wurde entfernt. Ohne Konfiguration bleibt
+  der Upstream-Standardname erhalten.
+- Minimales Anpassungsimage: `hosting/Dockerfile.branding`, Tag
+  `open-webui-posylkaai:v0.12.4-branding`. Es ersetzt nur `env.py` auf
+  dem gepinnten offiziellen v0.12.4-Image; kein vollstaendiger Source-Build.
+- Lizenz-Ausnahme: hoechstens 50 Endnutzer innerhalb rollierender 30 Tage.
+  Die API meldete bei der Einrichtung drei registrierte Benutzer. Bei
+  Wachstum die Ausnahme erneut pruefen; Registrierung geschlossen halten.
+  Logos sowie Copyright-/Lizenzdateien bleiben erhalten.
+- Konsistente Sicherung vor dem Deploy erfolgreich. HTTPS-Konfiguration
+  bestaetigt exakt `PosylkaAI`; Container gesund, Login-Seite erreichbar,
+  Authentifizierung aktiv, Signup geschlossen, WebSocket-Upgrade HTTP 101.
+  Die Nachbar-Domains behalten ihre zuvor beobachteten HTTP-Statuscodes.
+- Namenstests: `python3 -m unittest discover -s hosting/tests -v`.
+  Die authentifizierte Sidebar konnte wegen fehlendem Browserzugriff nicht
+  visuell geprueft werden; keine vollstaendige Browserabnahme behaupten.
+- CLIProxyAPI-Arbeiten anderer Sessions nicht ueberschreiben; sie gehoeren
+  nicht zur Namensaenderung. Kein weiterer Commit/Push automatisch.
+
 ## Projektziel: Posylka
 
 Open WebUI soll als KI-Arbeitsumgebung fuer **Posylka** dienen. In der

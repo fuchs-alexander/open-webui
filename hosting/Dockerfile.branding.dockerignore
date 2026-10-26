@@ -1,0 +1,6 @@
+**
+!backend/
+!backend/open_webui/
+!backend/open_webui/env.py
+!hosting/
+!hosting/Dockerfile.branding

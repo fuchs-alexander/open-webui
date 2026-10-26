@@ -2,7 +2,7 @@ name: open-webui
 
 services:
   open-webui:
-    image: ghcr.io/open-webui/open-webui:v0.12.4
+    image: open-webui-posylkaai:v0.12.4-branding
     container_name: open-webui
     restart: unless-stopped
     # Nur auf der vorhandenen Docker-Bridge, niemals auf der oeffentlichen IP.
@@ -12,6 +12,7 @@ services:
       - .env
     environment:
       TZ: Europe/Berlin
+      WEBUI_NAME: PosylkaAI
       WEBUI_URL: https://ai.colibo.io
       WEBUI_AUTH: "true"
       ENABLE_SIGNUP: "false"

@@ -1,0 +1,88 @@
+# CLIProxyAPI v8.0.43 fuer Open WebUI (tposylka). Vorlage ohne Geheimnisse.
+# Live: /opt/docker/cliproxyapi/config.yaml, __GATEWAY_KEY__ dort durch einen
+# frisch erzeugten Schluessel ersetzt. Der Wert steht nie im Repository.
+config-version: 8
+
+models:
+  catalog: ""
+  codex-catalog: ""
+  devin-catalog: ""
+
+server:
+  host: ""            # nur im Container; kein Host-Port veroeffentlicht
+  port: 8317
+  max-request-body-bytes: 33554432
+  trusted-proxies: []
+  tls:
+    enable: false
+  commercial-mode: false
+  discovery:
+    enabled: false
+
+# Management-API aus: leerer Schluessel liefert 404 fuer alle Management-Routen.
+management:
+  allow-remote: false
+  secret-key: ""
+  disable-control-panel: true
+  disable-auto-update-panel: true
+
+# Einziger Client ist das Open-WebUI-Backend.
+access:
+  api-keys:
+    - "__GATEWAY_KEY__"
+
+# Ein Konto je Provider: keine Wiederholungsrunden, kein Kontowechsel.
+# 429/Planlimits gehen direkt an Open WebUI zurueck.
+routing:
+  strategy: "fill-first"
+  session-affinity: false
+  force-model-prefix: false
+  retry:
+    request-retry: 0
+    max-retry-credentials: 1
+    max-retry-interval: 0
+  cooldown:
+    disable-cooling: false
+    save-cooldown-status: false
+    transient-error-cooldown-seconds: 0
+
+requests:
+  proxy-url: ""
+  tls-handshake-timeout-seconds: 30
+  passthrough-headers: false
+  nonstream-keepalive-interval: 0
+
+# Keine Verschleierung der Anwendung gegenueber den Providern.
+upstream:
+  codex:
+    disable-codex-cloaking: true
+    stream-bootstrap-buffering: false
+  claude:
+    disable-claude-cloak-mode: true
+    disable-cloaking-model-list: true
+
+oauth:
+  auth-dir: "/data/auths"
+  providers:
+    codex:
+      signin-with-chatgpt-identifier: "CLIProxyAPI"
+
+multimedia:
+  disable-image-generation: true
+
+# Kein Request-/Response-Body-Logging. Erzwungene Fehler-Logs enthalten Bodies;
+# WRITABLE_PATH in compose.yaml legt sie ins schreibgeschuetzte Image, wo sie scheitern.
+observability:
+  logs:
+    debug: false
+    logging-to-file: false
+    logs-max-total-size-mb: 0
+    error-logs-max-files: 10
+    request-log: false
+  usage:
+    usage-statistics-enabled: false
+  pprof:
+    enable: false
+
+plugins:
+  enabled: false
