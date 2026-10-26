@@ -1,0 +1,9 @@
+# Optional: erst nach ausdruecklichem Build-/Deploy-Auftrag verwenden.
+services:
+  open-webui:
+    image: open-webui-colibo:local
+    build:
+      context: /var/www/open-webui
+      dockerfile: Dockerfile
+      args:
+        BUILD_HASH: ${OPEN_WEBUI_BUILD_HASH:-colibo-local}

@@ -1,0 +1,10 @@
+[Unit]
+Description=Open WebUI taeglich sichern (Europe/Berlin)
+
+[Timer]
+OnCalendar=*-*-* 04:45:00 Europe/Berlin
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

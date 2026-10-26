@@ -1,0 +1,51 @@
+name: open-webui
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:v0.12.4
+    container_name: open-webui
+    restart: unless-stopped
+    # Nur auf der vorhandenen Docker-Bridge, niemals auf der oeffentlichen IP.
+    ports:
+      - "172.18.0.1:3080:8080"
+    env_file:
+      - .env
+    environment:
+      TZ: Europe/Berlin
+      WEBUI_URL: https://ai.colibo.io
+      WEBUI_AUTH: "true"
+      ENABLE_SIGNUP: "false"
+      DEFAULT_USER_ROLE: pending
+      DEFAULT_LOCALE: de-DE
+      CORS_ALLOW_ORIGIN: https://ai.colibo.io
+      WEBUI_AUTH_COOKIE_SECURE: "true"
+      WEBUI_SESSION_COOKIE_SECURE: "true"
+      JWT_EXPIRES_IN: 7d
+      # Bewusst keine API-Verbindung: ChatGPT-Pro-Anbindung erfolgt spaeter.
+      ENABLE_OPENAI_API: "false"
+      ENABLE_OLLAMA_API: "false"
+      ENABLE_VERSION_UPDATE_CHECK: "false"
+      RAG_EMBEDDING_MODEL_AUTO_UPDATE: "false"
+      WHISPER_MODEL_AUTO_UPDATE: "false"
+    volumes:
+      - ./data:/app/backend/data
+    mem_limit: 4g
+    cpus: 2
+    pids_limit: 512
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=5).read()"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
